@@ -3,6 +3,13 @@ const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
+exports.aliasTopTours = async (req, res, next) => {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+    next();
+};
+
 exports.getAllTours = catchAsync(async (req, res, next) => {
     // EXECUTE QUERY
     const tours = await Tour.find;
