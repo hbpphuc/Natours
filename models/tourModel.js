@@ -73,18 +73,17 @@ const tourSchema = new mongoose.Schema(
             required: [true, 'A tour must have a cover image'],
         },
         images: [String],
-        createAt: {
-            type: Date,
-            default: Date.now(),
-            select: false,
-        },
         startDates: [Date],
         secretTour: {
             type: Boolean,
             default: false,
         },
     },
-    { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+        timestamps: true,
+    }
 );
 
 tourSchema.virtual('durationWeeks').get(function () {
