@@ -41,6 +41,7 @@ const tourSchema = new mongoose.Schema(
         ratingsAverage: {
             type: Number,
             default: 4.5,
+            set: (val) => Math.round(val * 10) / 10,
         },
         ratingsQuantity: {
             type: Number,
@@ -115,6 +116,10 @@ const tourSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+// tourSchema.index({ price: 1 });
+// tourSchema.index({ duration: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7 || undefined;
