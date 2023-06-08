@@ -68,6 +68,16 @@ exports.login = catchAsync(async (req, res, next) => {
     createSendToken(user, 200, req, res);
 });
 
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'logout', {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+    });
+    res.status(200).json({
+        status: 'success',
+    });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
     // 1. Getting the token and check of it's there
     let token;
@@ -115,11 +125,12 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     req.user = currentUser;
+    res.locals.user = currentUser;
     next();
 });
 
 // Only for render page, no error!
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
         try {
             // 1) verify token
@@ -136,12 +147,12 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
             }
 
             // 3) Check if user changed password after the token was issued
-            if (currentUser.changedPasswordAfter(decoded.iat)) {
-                return next();
-            }
+            // if (currentUser.changedPasswordAfter(decoded.iat)) {
+            //     return next();
+            // }
 
             // THERE IS A LOGGED IN USER
-            res.locals.loggedInUser = currentUser;
+            res.locals.user = currentUser;
 
             return next();
         } catch (err) {
@@ -149,7 +160,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
         }
     }
     next();
-});
+};
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
