@@ -74,3 +74,6 @@ if (bookBtn) {
         await bookTour(tourId);
     });
 }
+
+const alertMsg = document.querySelector('body').dataset.alert;
+if (alertMsg) showAlert('success', alertMsg, 10);
